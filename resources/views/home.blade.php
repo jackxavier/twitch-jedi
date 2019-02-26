@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div v-for="twitchUser in twitchUsers">
-                <div class="card border-secondary">
+                <div class="card" style="border: 1px solid #ababab;border-radius: 5px">
                     <div class="card-header bg-transparent"><strong>@{{ twitchUser.display_name }}</strong></div>
                     <div class="card-body">
                         <div class="card-text">
@@ -40,7 +40,7 @@
                                     </div>
                                     <div v-else-if="twitchUser.id != user.twitch_id">
                                         <a class="btn btn-primary" @click.prevent="followUser(twitchUser)">
-                                            Follow User ❤️
+                                            Follow ❤️
                                         </a>
                                     </div>
                                     <div v-if="twitchUser.followed">
@@ -65,6 +65,9 @@
         </div>
         <div class="col-md-8">
             <h5 v-if="selectedUserChannel != ''">User @{{selectedUserChannel}}</h5>
+            <div v-for="notification in notifications">
+                <div>@{{ notification.body }}</div>
+            </div>
             <!-- Add a placeholder for the Twitch embed -->
             <div id="twitch-embed"></div>
 
@@ -82,11 +85,13 @@
                 searchBox: '',
                 onSearch: false,
                 selectedUserChannel: '',
+                notifications: {},
                 user: {!! Auth::check() ? Auth::user()->toJson() : null !!}
             },
             mounted() {
                 this.twitchUsers = {};
                 this.getTwitchUsers();
+                this.listen();
             },
             methods: {
                 getTwitchUsers(){
@@ -145,9 +150,14 @@
                             console.log(error);
                         })
                 },
+                listen() {
+                    Echo.private('user-notify')
+                        .listen('NewNotification', ($notification) => {
+                            this.notifications.unshift($notification);
+                        });
+                }
             }
         });
     </script>
     <script src="https://embed.twitch.tv/embed/v1.js"></script>
-
 @endsection

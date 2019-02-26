@@ -6,6 +6,7 @@ use App\Service\TwitchUserService;
 use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TwitchUserController extends Controller
 {
@@ -19,7 +20,6 @@ class TwitchUserController extends Controller
      */
     public function __construct(TwitchUserService $twitchUserService)
     {
-        //  $this->middleware('auth');
         $this->twitchUserService = $twitchUserService;
     }
 
@@ -28,7 +28,7 @@ class TwitchUserController extends Controller
      */
     public function index(): JsonResponse
     {
-        $users = $this->twitchUserService->getFollowedUsers($this->__getMockedUser());
+        $users = $this->twitchUserService->getFollowedUsers($this->getUser());
 
         return response()->json($users);
     }
@@ -44,7 +44,7 @@ class TwitchUserController extends Controller
         $userNameParam = $request->get('twitch_user_search') ?? null;
 
         if ($userNameParam) {
-            $users = $this->twitchUserService->findUsersByName($userNameParam, $this->__getMockedUser());
+            $users = $this->twitchUserService->findUsersByName($userNameParam, $this->getUser());
         }
 
         return response()->json($users);
@@ -55,7 +55,7 @@ class TwitchUserController extends Controller
      *
      * @return mixed
      */
-    public function subscribeToAUser(Request $request)
+    public function subscribeToAUser(Request $request): JsonResponse
     {
         $twitchUserId = $request->get('twitch_user_id');
 
@@ -63,7 +63,7 @@ class TwitchUserController extends Controller
             return response()->json(['status' => 'No user set']);
         }
 
-        $result = $this->twitchUserService->subscribeToAStream($twitchUserId, $this->__getMockedUser());
+        $result = $this->twitchUserService->subscribeToAStream($twitchUserId, $this->getUser());
 
         return response()->json($result);
     }
@@ -81,30 +81,21 @@ class TwitchUserController extends Controller
             return response()->json(['status' => 'No user set']);
         }
 
-        $result = $this->twitchUserService->followUser($twitchUserId, $this->__getMockedUser());
+        $result = $this->twitchUserService->followUser($twitchUserId, $this->getUser());
 
         return response()->json($result);
     }
 
     /**
-     * @return User
+     * @return mixed
      */
-    protected function __getMockedUser()
+    protected function getUser(): User
     {
-        $user = new User();
+        if (Auth::check()) {
+            return Auth::user();
+        }
 
-        $user->twitch_id      = '418279650';
-        $user->nickname       = 'jackxavier11';
-        $user->name           = 'jackxavier11';
-        $user->email          = 'jack.al.xavier@gmail.com';
-        $user->avatar
-                              = 'https://static-cdn.jtvnw.net/user-default-pictures/4cbf10f1-bb9f-4f57-90e1-15bf06cfe6f5-profile_image-300x300.jpg';
-        $user->remember_token = '3Y0kPPs2XSHYTvbsrEXGROj3nRnFEZ189CnoE95Ma0xanvnJeF9zYP0UqgTy       ';
-        $user->token          = 'l8f7fjs5wi67iszsf7h16u9k8q9hyu';
-        $user->refresh_token  = 'xpd60qi7mi3s6mhzqk1kw7ghkigqiaxpiq0d5mv5hxahml3epx';
-        $user->expires_in     = '15524';
-
-        return $user;
+        return User::all()->first();
     }
 }
 

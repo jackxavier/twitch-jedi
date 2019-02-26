@@ -31,15 +31,16 @@ class NotificationsController extends Controller
     public function notificationCallback(Request $request)
     {
         $data = $request->toArray();
+
         if (!empty($data)) {
             $this->notificationService->create($data);
         }
-        //   $data = (array)$request->get('data') ?? [];
 
         if ($request->isMethod('GET') && array_key_exists('hub_challenge', $data)) {
-
             return response($data['hub_challenge']);
         }
+
+        event($data);
 
         return response();
     }

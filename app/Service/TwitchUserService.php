@@ -13,8 +13,6 @@ class TwitchUserService
     protected $twitchApiProvider;
 
     /**
-     * TwitchUserService constructor.
-     *
      * @param TwitchApiProvider $twitchApiProvider
      */
     public function __construct(TwitchApiProvider $twitchApiProvider)
@@ -25,9 +23,9 @@ class TwitchUserService
     /**
      * @param User $user
      *
-     * @return array|mixed
+     * @return array
      */
-    protected function getFollowedUsersIds(User $user)
+    protected function getFollowedUsersIds(User $user): array
     {
         $apiClient = $this->twitchApiProvider->getNewTwitchApi();
 
@@ -56,7 +54,7 @@ class TwitchUserService
      *
      * @return array|mixed
      */
-    public function findUsers(array $userIds = [], array $userNames = [], $bearer)
+    public function findUsers(array $userIds = [], array $userNames = [], string $bearer): array
     {
         $apiClient = $this->twitchApiProvider->getNewTwitchApi();
 
@@ -82,6 +80,8 @@ class TwitchUserService
     }
 
     /**
+     * @param User $user
+     *
      * @return array
      */
     public function getFollowedUsers(User $user): array
@@ -118,14 +118,14 @@ class TwitchUserService
      *
      * @return array
      */
-    public function followUser($channel_id, User $user) : array
+    public function followUser($channel, User $user): array
     {
         $apiClient = $this->twitchApiProvider->getTwitchApi();
         if (!$apiClient) {
             return ['error' => sprintf('No API client returned')];
         }
 
-        $data = $apiClient->followChannel($user->twitch_id, $channel_id, $user->token, true);
+        $data = $apiClient->followChannel($user->name, $channel, $user->token, true);
 
         return $data;
     }
@@ -136,7 +136,7 @@ class TwitchUserService
      *
      * @return array|mixed
      */
-    public function findUsersByName($name, User $user)
+    public function findUsersByName(string $name, User $user): array
     {
         return $this->findUsers([], [$name], $user->token);
     }
@@ -147,7 +147,7 @@ class TwitchUserService
      *
      * @return array
      */
-    public function subscribeToAStream($twitchId, User $user): array
+    public function subscribeToAStream(string $twitchId, User $user): array
     {
         return $this->subscribe($twitchId, $user->token);
     }
@@ -158,7 +158,7 @@ class TwitchUserService
      *
      * @return array|bool
      */
-    protected function subscribe($twitchId, $accessToken)
+    protected function subscribe(string $twitchId, string $accessToken): array
     {
         $apiClient = $this->twitchApiProvider->getNewTwitchApi();
         if (!$apiClient) {

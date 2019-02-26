@@ -1049,7 +1049,7 @@ window.Pusher = __webpack_require__(36);
 
 window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo__["a" /* default */]({
   broadcaster: 'pusher',
-  key: "ABCDEFG",
+  key: "l8f7fjs5wi67iszsf7h16u9k8q9hyu",
   cluster: "eu",
   wsHost: window.location.hostname,
   wsPort: 6001
