@@ -14,7 +14,7 @@ class NotificationService
     public function create($data = [])
     {
         $notification            = new UserNotification();
-        $notification->body      = json_encode($data);
+        $notification->body      = json_encode($data)   ;
         $notification->twitch_id = 12123;
 
         $notification->save();
