@@ -17,4 +17,8 @@ class UserNotification extends Model
             'twitch_id',
             'body',
         ];
+
+    protected $casts = [
+
+    ];
 }

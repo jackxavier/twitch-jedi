@@ -16,7 +16,7 @@ class CreateNotificationsTable extends Migration
         Schema::create(
             'notifications', function (Blueprint $table) {
             $table->increments('id');
-            $table->json('body')->nullable();
+            $table->string('body')->nullable();
             $table->string('twitch_id')->nullable();
             $table->timestamps();
         }
