@@ -54,6 +54,7 @@ class TwitchApiProvider
         $options = [
             'client_id' => $clientId,
             'secret'    => $clientSecret,
+            'scope' => ['user_follows_edit'],
         ];
 
         $this->twitchApi = new TwitchApi($options);

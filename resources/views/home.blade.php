@@ -36,19 +36,19 @@
                                     <p>@{{twitchUser.description}}</p>
                                 </div>
                                 <div class="col-md-4">
-                                    <div v-if="twitchUser.followed && !twitchUser.subscribed">
+                                    <div v-if="twitchUser.followed">
                                         <a class="btn btn-warning" style="margin-right: 10px"
                                            @click.prevent="subscribeToUser(twitchUser)">
                                             Subscribe
                                         </a>
                                     </div>
                                     <div v-else-if="twitchUser.id != user.twitch_id">
-                                        <a class="btn btn-primary" style="margin-right: 10px"
+                                        <a class="btn btn-warning" style="margin-right: 10px"
                                            @click.prevent="followUser(twitchUser)">
                                             Follow ❤️
                                         </a>
                                     </div>
-                                    <div v-if="twitchUser.followed">
+                                    <div>
                                         <a class="btn btn-info" style="margin-right: 10px"
                                            @click.prevent="selectUser(twitchUser)">
                                             Select

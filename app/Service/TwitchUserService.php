@@ -113,19 +113,19 @@ class TwitchUserService
     }
 
     /**
-     * @param      $channel
-     * @param User $user
+     * @param      $subscribeToId
+     * @param User $subscriber
      *
      * @return array
      */
-    public function followUser($channel, User $user): array
+    public function followUser(int $subscribeToId,User $subscriber): array
     {
         $apiClient = $this->twitchApiProvider->getTwitchApi();
         if (!$apiClient) {
             return ['error' => sprintf('No API client returned')];
         }
 
-        $data = $apiClient->followChannel($user->name, $channel, $user->token, true);
+        $data = $apiClient->followChannel($subscriber->twitch_id, $subscribeToId, $subscriber->token, true);
 
         return $data;
     }
