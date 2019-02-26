@@ -16,7 +16,14 @@ class TwitchOauthMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $user = Socialite::driver('twitch')->userFromToken($request->token);
+        $token = session()->get('token');
+        dd($token);
+
+        if (empty($token) || !array_key_exists('oauth_token', $token)) {
+            return redirect('login');
+        }
+
+        $user = Socialite::driver('twitch')->userFromToken($request['oauth_token']);
 
         if ($user->getName()) {
             return $next($request);

@@ -6,7 +6,6 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
-        "beyondcode/laravel-websockets": "^1.0",
         "fideloper/proxy": "~4.0",
         "laravel/framework": "5.7.*",
         "laravel/socialite": "^4.1",

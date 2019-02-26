@@ -2,7 +2,6 @@
 
 namespace App\Events;
 
-use App\Comment;
 use App\UserNotification;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;

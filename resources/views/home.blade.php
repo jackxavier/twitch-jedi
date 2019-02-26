@@ -20,13 +20,16 @@
             </div>
             <div v-for="twitchUser in twitchUsers">
                 <div class="card" style="border: 1px solid #ababab;border-radius: 5px">
-                    <div class="card-header bg-transparent"><strong>@{{ twitchUser.display_name }}</strong></div>
+                    <div class="card-header bg-transparent"><strong
+                                style="margin-left: 10px">@{{ twitchUser.display_name }}</strong></div>
                     <div class="card-body">
                         <div class="card-text">
                             <div class="row">
                                 <div class="col-md-2">
                                     <img :src="twitchUser.profile_image_url" alt="..." width="50px"
-                                         height="50px">
+                                         height="50px"
+                                         style="margin-left: 10px"
+                                    >
 
                                 </div>
                                 <div class="col-md-6 ">
@@ -34,17 +37,20 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div v-if="twitchUser.followed && !twitchUser.subscribed">
-                                        <a class="btn btn-warning" @click.prevent="subscribeToUser(twitchUser)">
+                                        <a class="btn btn-warning" style="margin-right: 10px"
+                                           @click.prevent="subscribeToUser(twitchUser)">
                                             Subscribe
                                         </a>
                                     </div>
                                     <div v-else-if="twitchUser.id != user.twitch_id">
-                                        <a class="btn btn-primary" @click.prevent="followUser(twitchUser)">
+                                        <a class="btn btn-primary" style="margin-right: 10px"
+                                           @click.prevent="followUser(twitchUser)">
                                             Follow ❤️
                                         </a>
                                     </div>
                                     <div v-if="twitchUser.followed">
-                                        <a class="btn btn-info" @click.prevent="selectUser(twitchUser)">
+                                        <a class="btn btn-info" style="margin-right: 10px"
+                                           @click.prevent="selectUser(twitchUser)">
                                             Select
                                         </a>
                                     </div>
@@ -52,7 +58,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer bg-transparent">
+                    <div class="card-footer bg-transparent" style="text-align: left">
                         <p class="text-info" v-if="twitchUser.followed">
                             You follow this user
                         </p>
@@ -86,6 +92,7 @@
                 onSearch: false,
                 selectedUserChannel: '',
                 notifications: {},
+                twitchEmbeded: null,
                 user: {!! Auth::check() ? Auth::user()->toJson() : null !!}
             },
             mounted() {
@@ -128,8 +135,13 @@
                         })
                 },
                 selectUser(twitchUser){
+                    let element = document.getElementById("twitch-embed");
+                    while (element.firstChild) {
+                        element.removeChild(element.firstChild);
+                    }
                     this.selectedUserChannel = twitchUser.display_name;
-                    twitchEmbeded = new Twitch.Embed("twitch-embed", {
+
+                    this.twitchEmbeded = new Twitch.Embed("twitch-embed", {
                         width: 854,
                         height: 480,
                         channel: this.selectedUserChannel

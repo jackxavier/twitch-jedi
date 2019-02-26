@@ -4,10 +4,16 @@ namespace App\Service;
 
 use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use SocialiteProviders\Manager\OAuth2\User as OAuthUser;
 
 class UserService
 {
+    /**
+     * @var User | null
+     */
+    protected $authenticatedIdentity;
+
     /**
      * @param int|null $twitchId
      *
@@ -26,10 +32,6 @@ class UserService
      */
     public function populateUser(OAuthUser $oauthUser, ?User $user = null): User
     {
-        if (!$user) {
-            $user = new User();
-        }
-
         $token = $oauthUser->accessTokenResponseBody;
 
         $user->twitch_id     = $oauthUser->getId();
@@ -57,10 +59,32 @@ class UserService
         }
 
         $twitchUserId = $oauthUser->getId();
-
         $user = $this->findUserByTwitchId((int)$twitchUserId);
-        $user = $this->populateUser($oauthUser, $user);
+        $user = $this->updateUserOnAuth($oauthUser, $user ?? new User());
 
         Auth::login($user, true);
+    }
+
+    /**
+     * @param OAuthUser $oauthUser
+     * @param User      $user
+     *
+     * @return User
+     */
+    protected function updateUserOnAuth(OAuthUser $oauthUser, User $user): User
+    {
+        $user = $this->populateUser($oauthUser, $user);
+
+        $sessionData = [
+            'oauth_token'   => $user->token,
+            'refresh_token' => $user->refresh_token,
+            'expires_in'    => $user->expires_in,
+        ];
+        $user->save();
+
+        Session::remove('token');
+        Session::flash('twitch-auth-token', $sessionData);
+
+        return $user;
     }
 }

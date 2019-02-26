@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Service\TwitchUserService;
+use App\Service\UserService;
 use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,12 +16,15 @@ class TwitchUserController extends Controller
      */
     protected $twitchUserService;
 
-    /***
+    /**
      * @param TwitchUserService $twitchUserService
+     * @param UserService       $userService
      */
     public function __construct(TwitchUserService $twitchUserService)
     {
         $this->twitchUserService = $twitchUserService;
+
+        $this->middleware('auth');
     }
 
     /**
@@ -28,6 +32,7 @@ class TwitchUserController extends Controller
      */
     public function index(): JsonResponse
     {
+
         $users = $this->twitchUserService->getFollowedUsers($this->getUser());
 
         return response()->json($users);
@@ -57,6 +62,7 @@ class TwitchUserController extends Controller
      */
     public function subscribeToAUser(Request $request): JsonResponse
     {
+
         $twitchUserId = $request->get('twitch_user_id');
 
         if (empty($twitchUserId)) {
@@ -91,11 +97,7 @@ class TwitchUserController extends Controller
      */
     protected function getUser(): User
     {
-        if (Auth::check()) {
-            return Auth::user();
-        }
-
-        return User::all()->first();
+        return Auth::user();
     }
 }
 

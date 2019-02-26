@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewMessage;
-
 class HomeController extends Controller
 {
     /**
@@ -23,12 +21,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-//        try{
-//            event(new NewMessage("hello world"));
-//        } catch (\Exception $exception){
-//            dd($exception);
-//        }
-
         return view('home');
     }
 }

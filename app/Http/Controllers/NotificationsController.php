@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Events\NewNotification;
 use App\Service\NotificationService;
 use Illuminate\Http\Request;
 
@@ -33,14 +34,14 @@ class NotificationsController extends Controller
         $data = $request->toArray();
 
         if (!empty($data)) {
-            $this->notificationService->create($data);
+            $notification = $this->notificationService->create($data);
         }
 
         if ($request->isMethod('GET') && array_key_exists('hub_challenge', $data)) {
             return response($data['hub_challenge']);
         }
 
-        event($data);
+        broadcast(new NewNotification($notification));
 
         return response();
     }

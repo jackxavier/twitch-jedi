@@ -113,7 +113,7 @@ class TwitchUserService
     }
 
     /**
-     * @param      $channel_id
+     * @param      $channel
      * @param User $user
      *
      * @return array
