@@ -27,8 +27,3 @@ Route::middleware(TwitchOauthMiddleware::class)->group(
     }
 );
 
-Route::middleware('auth:api')->group(
-    function () {
-        Route::post('posts/{post}/comment', 'CommentController@store');
-});
-
